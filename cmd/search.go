@@ -18,6 +18,7 @@ The term can be a name of a place or stop.`,
 	Args: cobra.ExactArgs(1), // Ensure exactly one argument is provided
 	Run: func(cmd *cobra.Command, args []string) {
 		searchterm := args[0] // Get the search term from the arguments
+
 		haltesJson := apiHalteSearch(searchterm, limit)
 		if haltesJson != nil {
 			transitPoints, err := parseTransitPoints(haltesJson)
@@ -26,11 +27,16 @@ The term can be a name of a place or stop.`,
 				return
 			}
 
-			for _, tp := range transitPoints {
-				fmt.Println(tp.Omschrijving, tp.Haltenummer)
-			}
+			printTransitPoints(transitPoints)
 		}
 	},
+}
+
+func printTransitPoints(tp []TransitPoint) {
+	for _, tp := range tp {
+		fmt.Println(tp.Omschrijving, tp.Haltenummer)
+	}
+
 }
 
 func parseTransitPoints(jsonData []byte) ([]TransitPoint, error) {
