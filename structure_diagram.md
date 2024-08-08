@@ -1,11 +1,41 @@
 ```mermaid
-graph TD;
+flowchart LR;
+subgraph config
+config.yaml
+custom_commands
+API-keys
+TransitPoints
+end
+
+subgraph commands
     commandlijn;
+    init;
+    validate
+    timetable
+    search
+end
+
+subgraph entities
+transitpoints
+end
+
+commandlijn --> init --> config.yaml;
+commandlijn --> validate --> config.yaml
+
     config.yaml;
-    commandlijn --> | validate | config.yaml;
-    commandlijn --> | init| config.yaml;
-    commandlijn --> | timetable id | haltes;
-    commandlijn --> | search searchstring | haltes;
-    config.yaml --> custom_commands;
-	config.yaml --> haltes;
-	config.yaml --> API-keys;
+    commandlijn --> timetable --> transitpoints;
+    commandlijn --> search --> transitpoints;
+    config.yaml -.-> custom_commands;
+	config.yaml -.-> TransitPoints;
+	config.yaml -.-> API-keys;
+
+```
+
+
+## Commands
+
+### validate
+`-v --verbose `: will print status of each entry individually. 
+
+### init
+Initialises an empty commandlijn.yaml config file at `~/.config/commandlijn/`
