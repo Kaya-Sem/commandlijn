@@ -1,11 +1,15 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
+	"time"
 
+	"github.com/briandowns/spinner"
 	"github.com/spf13/cobra"
 )
+
+// Define the default search limit
+const SearchLimit int = 10
 
 var limit int
 
@@ -14,14 +18,19 @@ var searchCmd = &cobra.Command{
 	Use:   "search [searchterm]",
 	Short: "Search for public transport stops.",
 	Long: `Search for public transport stops using a search term. 
-The term can be a name of a place or stop.`,
+The term can be a name of a place or stop. Searches for both De Lijn and SNCB`,
 	Args: cobra.ExactArgs(1), // Ensure exactly one argument is provided
 	Run: func(cmd *cobra.Command, args []string) {
 		searchterm := args[0] // Get the search term from the arguments
+		s := spinner.New(spinner.CharSets[14], 100*time.Millisecond)
+		s.Start()
+		defer s.Stop()
 
+		// TODO: also search SNCB stops
 		haltesJson := apiHalteSearch(searchterm, limit)
+		s.Stop()
 		if haltesJson != nil {
-			transitPoints, err := parseTransitPoints(haltesJson)
+			transitPoints, err := parseDeLijnTransitPoints(haltesJson)
 			if err != nil {
 				fmt.Println("Error parsing JSON:", err)
 				return
@@ -32,32 +41,8 @@ The term can be a name of a place or stop.`,
 	},
 }
 
-func printTransitPoints(tp []TransitPoint) {
-	for _, tp := range tp {
-		fmt.Println(tp.Omschrijving, tp.Haltenummer)
-	}
-
-}
-
-func parseTransitPoints(jsonData []byte) ([]TransitPoint, error) {
-	// Create a struct to match the top-level JSON structure
-	var result struct {
-		AantalHits int            `json:"aantalHits"`
-		Haltes     []TransitPoint `json:"haltes"`
-	}
-
-	// Unmarshal the JSON into the struct
-	err := json.Unmarshal(jsonData, &result)
-	if err != nil {
-		return nil, err
-	}
-
-	// Return the slice of TransitPoint structs
-	return result.Haltes, nil
-}
-
 func init() {
 	// Define the flag for limit
-	searchCmd.Flags().IntVarP(&limit, "limit", "l", 10, "Limit the number of results")
+	searchCmd.Flags().IntVarP(&limit, "limit", "l", SearchLimit, "Limit the number of results")
 	rootCmd.AddCommand(searchCmd)
 }
