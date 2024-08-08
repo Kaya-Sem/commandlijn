@@ -7,4 +7,3 @@ graph TD;
     config.yaml --> custom_commands;
 	config.yaml --> haltes;
 	config.yaml --> API-keys;
-    custom_commands --> haltes;
