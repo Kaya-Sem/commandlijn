@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -44,4 +45,25 @@ func apiHalteSearch(searchterm string, limit int) []byte {
 	}
 
 	return body
+}
+
+func parseDeLijnTransitPoints(jsonData []byte) ([]TransitPoint, error) {
+	// Create a struct to match the top-level JSON structure
+	var result struct {
+		AantalHits int            `json:"aantalHits"`
+		Haltes     []TransitPoint `json:"haltes"`
+	}
+
+	// Unmarshal the JSON into the struct
+	err := json.Unmarshal(jsonData, &result)
+	if err != nil {
+		return nil, err
+	}
+
+	// Manually set the TransitProvider for each TransitPoint
+	for i := range result.Haltes {
+		result.Haltes[i].TransitProvider = DELIJN
+	}
+
+	return result.Haltes, nil
 }
