@@ -6,9 +6,14 @@ commandelijn is a commandline interface for managing Belgium's
 public transport providers [De Lijn](https://www.delijn.be/en/)
 and [SNCB](https://www.belgiantrain.be/en) routes and timetables
 
-## Installations
+## Installation
 
 ## Usage
+
+
+### Technical Details
+
+You can see the basic project structure laid out in the [project diagram](structure_diagram.md)
 
 ### Acknowledgments
 
