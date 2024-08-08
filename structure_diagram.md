@@ -1,10 +1,10 @@
 ```mermaid
 graph TD;
-    commands;
-	config.yaml;
-    commands --> |$commandlijn validate| config.yaml;
-    commands --> |$commandlijn timetable <halte-id>| Haltes;
+    commandlijn;
+    config.yaml;
+    commandlijn --> |$commandlijn validate| config.yaml;
+    commandlijn --> |$commandlijn timetable <id>| haltes;
     config.yaml --> custom_commands;
-	config.yaml --> Haltes;
+	config.yaml --> haltes;
 	config.yaml --> API-keys;
-    custom_commands --> Haltes;
+    custom_commands --> haltes;
