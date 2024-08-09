@@ -44,6 +44,7 @@ func apiHalteSearch(searchterm string, limit int) []byte {
 		return nil
 	}
 
+	logVerbose(fmt.Sprintf("\nStatus code: %s\n", StatusCodes[resp.StatusCode]))
 	return body
 }
 
