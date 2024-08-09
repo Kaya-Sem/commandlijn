@@ -22,7 +22,9 @@ The term can be a name of a place or stop. Searches for both De Lijn and SNCB`,
 	Args: cobra.ExactArgs(1), // Ensure exactly one argument is provided
 	Run: func(cmd *cobra.Command, args []string) {
 		searchterm := args[0] // Get the search term from the arguments
-		s := spinner.New(spinner.CharSets[14], 100*time.Millisecond)
+		trainSet := []string{"🚅", "🚆", "🚈", "🚌"}
+		s := spinner.New(trainSet, 100*time.Millisecond)
+		//s := spinner.New(spinner.CharSets[14], 100*time.Millisecond)
 		s.Start()
 		defer s.Stop()
 
