@@ -6,6 +6,16 @@ import (
 	"time"
 )
 
+const (
+	StatusOK                  = 200
+	StatusInternalServerError = 500
+)
+
+var StatusCodes = map[int]string{
+	StatusOK:                  "\033[32m200 OK\033[0m",                    // green
+	StatusInternalServerError: "\033[31m500 Internal Server Error\033[0m", // red
+}
+
 func replaceSpacesWithURLCode(input string) string {
 	return strings.ReplaceAll(input, " ", "%20")
 }
