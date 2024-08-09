@@ -1,4 +1,4 @@
-# commandelijn
+# commandlijn
 
 > Terminaal te laat
 
