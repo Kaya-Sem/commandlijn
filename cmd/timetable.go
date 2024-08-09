@@ -13,8 +13,7 @@ var timetableCmd = &cobra.Command{
 You can specify a time using the -t or --time flag in 24-hour format (e.g., 1200 or 12:00). 
 Additionally, you can use the optional flags:
 
-  -d, --departure  : To get departure times (default behavior).
-  -a, --arrival    : To get arrival times.
+  -a, --arrival    : To get arrival times instead of departure times.
 
 Examples:
   # Get the timetable for the current time and default to departure times.
@@ -30,16 +29,9 @@ Examples:
 		transitpoint := args[0] // Retrieve the transitpoint argument
 		time, _ := cmd.Flags().GetString("time")
 		isArrival, _ := cmd.Flags().GetBool("arrival")
-		isDeparture, _ := cmd.Flags().GetBool("departure")
 
-		// Default values
 		if time == "" {
-			time = "current time" // TODO: implement with actual time retrieval logic
-		}
-
-		if isArrival && isDeparture {
-			fmt.Println("Please specify only one of --arrival or --departure.")
-			return
+			time = getCurrentTimeHHMM()
 		}
 
 		if isArrival {
@@ -53,7 +45,6 @@ Examples:
 func init() {
 	timetableCmd.Flags().StringP("time", "t", "", "Specify the time in 24-hour format (e.g., 1200 or 12:00)")
 	timetableCmd.Flags().BoolP("arrival", "a", false, "Get arrival times")
-	timetableCmd.Flags().BoolP("departure", "d", true, "Get departure times (default)")
 
 	rootCmd.AddCommand(timetableCmd)
 }
