@@ -2,6 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"log"
+	"os"
+	"time"
+
 	"github.com/spf13/cobra"
 )
 
@@ -27,17 +31,33 @@ Examples:
 	Args: cobra.ExactArgs(1), // Require exactly one argument
 	Run: func(cmd *cobra.Command, args []string) {
 		transitpoint := args[0] // Retrieve the transitpoint argument
-		time, _ := cmd.Flags().GetString("time")
+		searchTime, _ := cmd.Flags().GetString("time")
 		isArrival, _ := cmd.Flags().GetBool("arrival")
 
-		if time == "" {
-			time = getCurrentTimeHHMM()
+		var arrdep string
+		if isArrival {
+			arrdep = "arrival"
+		} else {
+			arrdep = "departure"
 		}
 
-		if isArrival {
-			fmt.Printf("Fetching arrival times for transit point %s at time %s\n", transitpoint, time)
-		} else {
-			fmt.Printf("Fetching departure times for transit point %s at time %s\n", transitpoint, time)
+		if searchTime == "" {
+			searchTime = getCurrentTimeHHMM()
+		}
+
+		json, _ := getSNCBStationTimeTable(transitpoint, searchTime, arrdep)
+		departures, err := parseiRailDepartures(json)
+		if err != nil {
+			log.Fatal("error", err)
+			os.Exit(1)
+		}
+
+		t := time.Now()
+		date := t.Format("2 Jan '06")
+
+		fmt.Printf("%s %s\n", transitpoint, date)
+		for _, departure := range departures {
+			printDeparture(departure)
 		}
 	},
 }

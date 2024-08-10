@@ -14,8 +14,8 @@ func addDeLijnHeaderMetadata(request *http.Request) {
 	request.Header.Add("Ocp-Apim-Subscription-Key", apiKey)
 }
 
-// apiHalteSearch performs the API request and returns the response body as JSON (byte slice).
-func apiHalteSearch(searchterm string, limit int) []byte {
+// getDeLijnHaltesJSON performs the API request and returns the response body as JSON (byte slice).
+func getDeLijnHaltesJSON(searchterm string, limit int) []byte {
 	searchterm = replaceSpacesWithURLCode(searchterm)
 
 	url := fmt.Sprintf("https://api.delijn.be/DLZoekOpenData/v1/zoek/haltes/%s?startIndex=0&maxAantalHits=%d", searchterm, limit)
@@ -44,27 +44,44 @@ func apiHalteSearch(searchterm string, limit int) []byte {
 		return nil
 	}
 
-	logVerbose(fmt.Sprintf("\nStatus code: %s\n", StatusCodes[resp.StatusCode]))
+	// TODO:
+	//logVerbose(fmt.Sprintf("\nStatus code: %s", StatusCodes[resp.StatusCode]))
 	return body
 }
 
-func parseDeLijnTransitPoints(jsonData []byte) ([]TransitPoint, error) {
-	// Create a struct to match the top-level JSON structure
-	var result struct {
-		AantalHits int            `json:"aantalHits"`
-		Haltes     []TransitPoint `json:"haltes"`
-	}
+type Halte struct {
+	Entiteitnummer string `json:"entiteitnummer"`
+	Haltenummer    string `json:"haltenummer"`
+	Omschrijving   string `json:"omschrijving"`
+}
 
-	// Unmarshal the JSON into the struct
+type ApiResponse struct {
+	AantalHits int     `json:"aantalHits"`
+	Haltes     []Halte `json:"haltes"`
+}
+
+func parseDeLijnTransitPoints(jsonData []byte) ([]TransitPoint, error) {
+	var result ApiResponse
+
 	err := json.Unmarshal(jsonData, &result)
 	if err != nil {
 		return nil, err
 	}
 
-	// Manually set the TransitProvider for each TransitPoint
-	for i := range result.Haltes {
-		result.Haltes[i].TransitProvider = DELIJN
+	var transitPoints []TransitPoint
+
+	// Map the intermediate structs to TransitPoint
+	for _, halte := range result.Haltes {
+		transitPoint := TransitPoint{
+			Id:              halte.Haltenummer,
+			Name:            halte.Omschrijving,
+			Description:     halte.Omschrijving,
+			TransitProvider: string(DELIJN),
+		}
+		transitPoints = append(transitPoints, transitPoint)
 	}
 
-	return result.Haltes, nil
+	// TODO:
+	// logVerbose(fmt.Sprintf("total results: %d\n", result.AantalHits))
+	return transitPoints, nil
 }

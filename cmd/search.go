@@ -68,10 +68,10 @@ var sncbCmd = &cobra.Command{
 
 		// TODO: Implement SNCB/NMBS search logic
 		fmt.Printf("todo implement searchterm filtering: %s", searchterm)
-		sncbJson := getSNCBStationsJSON()
+		sncbJSON := getSNCBStationsJSON()
 		s.Stop()
-		if sncbJson != nil {
-			transitPoints, err := parseiRailTransitPoints(sncbJson)
+		if sncbJSON != nil {
+			transitPoints, err := parseiRailTransitPoints(sncbJSON)
 			if err != nil {
 				fmt.Println("Error parsing JSON:", err)
 				return

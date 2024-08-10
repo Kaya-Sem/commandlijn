@@ -7,16 +7,43 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"regexp"
 )
 
 const (
-	allStationsURL = "https://api.irail.be/stations/?format=json&lang=en"
+	BaseURL             = "https://api.irail.be"
+	allStationsURL      = BaseURL + "/stations/?format=json&lang=en"
+	StationTimetableURL = BaseURL + "/liveboard/?id=%s&station=%s&time=%s&arrdep=%s&lang=nl&format=json"
 )
 
-// TODO:
-func getSNCBStationTimeTable(name string) []byte {
-	return nil
+// https://docs.irail.be/#liveboard-liveboard-api-get
+func getSNCBStationTimeTable(stationId string, time string, arrdep string) ([]byte, error) {
+	url := fmt.Sprintf(StationTimetableURL, stationId, "", time, arrdep)
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	// Read the response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	return body, nil
+}
+
+// Parse the iRail departures JSON into a slice of Departure structs
+func parseiRailDepartures(jsonData []byte) ([]Departure, error) {
+	var response StationTimetableResponse
+	err := json.Unmarshal(jsonData, &response)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal JSON: %v - input data: %s", err, string(jsonData))
+	}
+
+	// Extract the list of departures
+	return response.Departures.Departure, nil
 }
 
 func getSNCBStationsJSON() []byte {
@@ -67,9 +94,8 @@ func parseiRailTransitPoints(jsonData []byte) ([]TransitPoint, error) {
 
 	// Convert the parsed data to the TransitPoint struct
 	transitPoints := make([]TransitPoint, len(result.Stations))
-	for index, station := range result.Stations {
-
-		transitPoints[index] = TransitPoint{
+	for i, station := range result.Stations {
+		transitPoints[i] = TransitPoint{
 			Name:            station.Name,
 			Id:              station.ID,
 			TransitProvider: string(SNCB),
