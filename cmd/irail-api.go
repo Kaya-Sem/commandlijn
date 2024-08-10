@@ -65,21 +65,13 @@ func parseiRailTransitPoints(jsonData []byte) ([]TransitPoint, error) {
 		return nil, fmt.Errorf("failed to unmarshal JSON: %v - input data: %s", err, string(jsonData))
 	}
 
-	idRegex := regexp.MustCompile(`\d+`)
-
 	// Convert the parsed data to the TransitPoint struct
 	transitPoints := make([]TransitPoint, len(result.Stations))
 	for index, station := range result.Stations {
-		numericID := idRegex.FindString(station.ID)
-
-		// Check if numericID is empty, meaning no digits were found
-		if numericID == "" {
-			return nil, fmt.Errorf("invalid ID format for station %s: no numeric part found in ID '%s'", station.Name, station.ID)
-		}
 
 		transitPoints[index] = TransitPoint{
 			Name:            station.Name,
-			Id:              numericID,
+			Id:              station.ID,
 			TransitProvider: string(SNCB),
 			Description:     "",
 		}
