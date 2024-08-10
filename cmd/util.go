@@ -22,7 +22,7 @@ func replaceSpacesWithURLCode(input string) string {
 
 func printTransitPoints(tp []TransitPoint) {
 	for _, t := range tp {
-		fmt.Printf("%s Haltenummer: %s Provider: %s\n", t.Id, t.Description, t.TransitProvider)
+		fmt.Printf("ID: %s Name: %s Description: %s Provider: %s\n", t.Id, t.Name, t.Description, t.TransitProvider)
 	}
 }
 
@@ -31,6 +31,7 @@ func getCurrentTimeHHMM() string {
 	return fmt.Sprintf("%d%02d", hours, minutes)
 
 }
+
 func normalizeTime(time string) string {
 	time = strings.ReplaceAll(time, " ", "")
 	time = strings.ReplaceAll(time, ":", "")
