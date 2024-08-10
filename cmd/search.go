@@ -21,7 +21,6 @@ var searchCmd = &cobra.Command{
 The term can be a name of a place or stop. Searches for both De Lijn and SNCB.`,
 }
 
-// delijnCmd represents the delijn subcommand
 var delijnCmd = &cobra.Command{
 	Use:   "delijn [searchterm]",
 	Short: "Search for De Lijn public transport stops.",
@@ -29,12 +28,17 @@ var delijnCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1), // Ensure exactly one argument is provided
 	Run: func(cmd *cobra.Command, args []string) {
 		searchterm := args[0] // Get the search term from the arguments
-		s := spinner.New(spinner.CharSets[14], 100*time.Millisecond)
+
+		s := spinner.New(spinner.CharSets[35], 250*time.Millisecond)
+		s.Prefix = "searching stops "
 		s.Start()
 		defer s.Stop()
+		time.Sleep(1 * time.Second)
 
-		haltesJson := apiHalteSearch(searchterm, limit)
+		haltesJson := getDeLijnHaltesJSON(searchterm, limit)
+
 		s.Stop()
+
 		if haltesJson != nil {
 			transitPoints, err := parseDeLijnTransitPoints(haltesJson)
 			if err != nil {
@@ -55,9 +59,12 @@ var sncbCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1), // Ensure exactly one argument is provided
 	Run: func(cmd *cobra.Command, args []string) {
 		searchterm := args[0] // Get the search term from the arguments
+
 		s := spinner.New(spinner.CharSets[14], 100*time.Millisecond)
+		s.Suffix = " searching stations..."
 		s.Start()
 		defer s.Stop()
+		time.Sleep(1 * time.Second)
 
 		// TODO: Implement SNCB/NMBS search logic
 		fmt.Printf("todo implement searchterm filtering: %s", searchterm)
@@ -76,8 +83,7 @@ var sncbCmd = &cobra.Command{
 }
 
 func init() {
-	// Define the flag for limit
-	searchCmd.Flags().IntVarP(&limit, "limit", "l", SearchLimit, "Limit the number of results")
+	delijnCmd.Flags().IntVarP(&limit, "limit", "l", SearchLimit, "Limit the number of results")
 
 	// Add subcommands to the search command
 	searchCmd.AddCommand(delijnCmd)
