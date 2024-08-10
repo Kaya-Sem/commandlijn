@@ -13,7 +13,7 @@ import (
 const (
 	StationName                 = "" // we only use ID to query for timetables, so the name should be left blank
 	BaseURL                     = "https://api.irail.be"
-	allStationsURL              = BaseURL + "/stations/?format=json&lang=en"
+	allStationsURL              = BaseURL + "/stations/?format=json&lang=nl"
 	StationTimetableURLTimed    = BaseURL + "/liveboard/?id=%s&station=%s&time=%s&arrdep=%s&lang=nl&format=json"
 	StationTimetableURLNotTimed = BaseURL + "/liveboard/?id=%s&station=%s&arrdep=%s&lang=nl&format=json"
 )
