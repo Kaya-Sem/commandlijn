@@ -43,3 +43,8 @@ func logVerbose(msg string) {
 		fmt.Println(msg)
 	}
 }
+
+func UnixToHHMM(unixTime int64) string {
+	t := time.Unix(unixTime, 0).UTC()
+	return t.Format("15:04")
+}
