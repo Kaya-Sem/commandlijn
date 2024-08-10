@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -47,4 +48,16 @@ func logVerbose(msg string) {
 func UnixToHHMM(unixTime int64) string {
 	t := time.Unix(unixTime, 0).Local()
 	return t.Format("15:04")
+}
+
+func FormatDelay(minutes int) string {
+	if minutes >= 60 {
+		hours := minutes / 60
+		remainingMinutes := minutes % 60
+		if remainingMinutes > 0 {
+			return strconv.Itoa(hours) + "h " + strconv.Itoa(remainingMinutes) + "m"
+		}
+		return strconv.Itoa(hours) + "h"
+	}
+	return strconv.Itoa(minutes)
 }
