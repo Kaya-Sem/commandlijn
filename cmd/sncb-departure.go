@@ -12,20 +12,20 @@ func printDeparture(d Departure) {
 	if err != nil {
 		fmt.Printf(`Could not convert string %s`, d.Time)
 	}
-	timestamp := UnixToHHMM(time)
+	departureTime := UnixToHHMM(time)
 	if err != nil {
 		fmt.Printf("Error converting time: %v\n", err)
 		return
 	}
 
-	d.Delay = "4"
-
+	// delay is represented as seconds.
 	delay, _ := strconv.Atoi(d.Delay)
+	delay = delay / 60
 	if delay > 0 {
-		timestamp = fmt.Sprintf("+%s\033[31m+%s\033[0m", timestamp, d.Delay)
+		departureTime = fmt.Sprintf("+%s\033[31m+%s\033[0m", departureTime, FormatDelay(delay))
 	}
 
-	fmt.Printf("↳ %s at %s, Platform: %s\n", d.Station, timestamp, d.Platform)
+	fmt.Printf("↳ %s at %s, Platform: %s\n", d.Station, departureTime, d.Platform)
 }
 
 type TimetableEntry interface {
@@ -57,7 +57,7 @@ type Departure struct {
 	Station             string       `json:"station"`
 	StationInfo         StationInfo  `json:"stationinfo"`
 	Time                string       `json:"time"`
-	Delay               string       `json:"delay"`
+	Delay               string       `json:"delay"` // seconds
 	Canceled            string       `json:"canceled"`
 	Left                string       `json:"left"`
 	IsExtra             string       `json:"isExtra"`
