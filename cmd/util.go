@@ -45,6 +45,6 @@ func logVerbose(msg string) {
 }
 
 func UnixToHHMM(unixTime int64) string {
-	t := time.Unix(unixTime, 0).UTC()
+	t := time.Unix(unixTime, 0).Local()
 	return t.Format("15:04")
 }
