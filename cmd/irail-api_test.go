@@ -27,13 +27,13 @@ func TestParseiRailTransitPoints(t *testing.T) {
 	expectedTransitPoints := []TransitPoint{
 		{
 			Name:            "'s Hertogenbosch",
-			Id:              "008400319",
+			Id:              "BE.NMBS.008400319",
 			TransitProvider: string(SNCB),
 			Description:     "",
 		},
 		{
 			Name:            "Aachen Hbf",
-			Id:              "008015345",
+			Id:              "BE.NMBS.008015345",
 			TransitProvider: string(SNCB),
 			Description:     "",
 		},
