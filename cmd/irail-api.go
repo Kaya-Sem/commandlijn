@@ -1,5 +1,7 @@
 package cmd
 
+// https://docs.irail.be/
+
 import (
 	"encoding/json"
 	"fmt"
@@ -54,6 +56,8 @@ type stationJSON struct {
 var result struct {
 	Stations []stationJSON `json:"station"`
 }
+
+// https://docs.irail.be/#stations-stations-api-get
 
 func parseiRailTransitPoints(jsonData []byte) ([]TransitPoint, error) {
 	err := json.Unmarshal(jsonData, &result)
