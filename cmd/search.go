@@ -27,7 +27,7 @@ var delijnCmd = &cobra.Command{
 	Long:  `Search for De Lijn public transport stops using a search term. The term can be a name of a place or stop.`,
 	Args:  cobra.ExactArgs(1), // Ensure exactly one argument is provided
 	Run: func(cmd *cobra.Command, args []string) {
-		searchterm := args[0] // Get the search term from the arguments
+		searchterm := args[0] // Get the search term
 
 		s := spinner.New(spinner.CharSets[35], 250*time.Millisecond)
 		s.Prefix = "searching stops "
