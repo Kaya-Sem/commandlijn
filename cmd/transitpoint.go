@@ -7,6 +7,7 @@ const (
 	SNCB   TransitProvider = "SNCB"
 )
 
+// TransitPoint is a general representation of a stop or station
 type TransitPoint struct {
 	Name            string
 	Id              string
