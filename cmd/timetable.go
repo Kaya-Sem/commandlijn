@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/briandowns/spinner"
 	"github.com/spf13/cobra"
 )
 
@@ -41,9 +42,11 @@ Examples:
 			arrdep = "departure"
 		}
 
-		if searchTime == "" {
-			searchTime = getCurrentTimeHHMM()
-		}
+		s := spinner.New(spinner.CharSets[35], 250*time.Millisecond)
+		s.Prefix = "Loading timetable "
+		s.Start()
+		defer s.Stop()
+		time.Sleep(1 * time.Second)
 
 		json, _ := getSNCBStationTimeTable(transitpoint, searchTime, arrdep)
 		departures, err := parseiRailDepartures(json)
@@ -55,6 +58,7 @@ Examples:
 		t := time.Now()
 		date := t.Format("2 Jan '06")
 
+		s.Stop()
 		fmt.Printf("%s %s\n", transitpoint, date)
 		for _, departure := range departures {
 			printDeparture(departure)
