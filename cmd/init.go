@@ -12,7 +12,6 @@ import (
 // Configuration structure
 type Config struct {
 	DeLijnAPIKey string `yaml:"delijn_api_key"`
-	SNCBAPIKey   string `yaml:"sncb_api_key"`
 }
 
 // initCmd represents the init command
@@ -20,7 +19,7 @@ var initCmd = &cobra.Command{
 	Use:   "init",
 	Short: "Initialize the commandlijn configuration file",
 	Long: `This command initializes a configuration file at ~/.config/commandlijn/commandlijn.yaml
-with the required API keys for DeLijn and SNCB.`,
+with the required API key for DeLijn.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if err := initializeConfig(); err != nil {
 			fmt.Println("Error initializing configuration:", err)
@@ -51,15 +50,9 @@ func initializeConfig() error {
 		return fmt.Errorf("error reading DeLijn API key: %v", err)
 	}
 
-	sncbAPIKey, err := promptForInput("Enter SNCB API key:")
-	if err != nil {
-		return fmt.Errorf("error reading SNCB API key: %v", err)
-	}
-
 	// Create configuration
 	config := Config{
 		DeLijnAPIKey: delijnAPIKey,
-		SNCBAPIKey:   sncbAPIKey,
 	}
 
 	// Marshal configuration to YAML
