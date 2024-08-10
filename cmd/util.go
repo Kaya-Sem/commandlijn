@@ -22,7 +22,7 @@ func replaceSpacesWithURLCode(input string) string {
 
 func printTransitPoints(tp []TransitPoint) {
 	for _, t := range tp {
-		fmt.Printf("%s Haltenummer: %s Provider: %s\n", t.Omschrijving, t.Haltenummer, t.TransitProvider)
+		fmt.Printf("%s Haltenummer: %s Provider: %s\n", t.Id, t.Description, t.TransitProvider)
 	}
 }
 
