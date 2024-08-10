@@ -9,15 +9,24 @@ import (
 	"net/http"
 )
 
+// when a time is not specified for timetables, we should use the NotTimed URL for better responses from the API.
 const (
-	BaseURL             = "https://api.irail.be"
-	allStationsURL      = BaseURL + "/stations/?format=json&lang=en"
-	StationTimetableURL = BaseURL + "/liveboard/?id=%s&station=%s&time=%s&arrdep=%s&lang=nl&format=json"
+	StationName                 = "" // we only use ID to query for timetables, so the name should be left blank
+	BaseURL                     = "https://api.irail.be"
+	allStationsURL              = BaseURL + "/stations/?format=json&lang=en"
+	StationTimetableURLTimed    = BaseURL + "/liveboard/?id=%s&station=%s&time=%s&arrdep=%s&lang=nl&format=json"
+	StationTimetableURLNotTimed = BaseURL + "/liveboard/?id=%s&station=%s&arrdep=%s&lang=nl&format=json"
 )
 
 // https://docs.irail.be/#liveboard-liveboard-api-get
 func getSNCBStationTimeTable(stationId string, time string, arrdep string) ([]byte, error) {
-	url := fmt.Sprintf(StationTimetableURL, stationId, "", time, arrdep)
+	var url string
+
+	if time == "" {
+		url = fmt.Sprintf(StationTimetableURLNotTimed, stationId, StationName, arrdep)
+	} else {
+		url = fmt.Sprintf(StationTimetableURLTimed, stationId, StationName, time, arrdep)
+	}
 
 	resp, err := http.Get(url)
 	if err != nil {
