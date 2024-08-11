@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 )
 
 func addDeLijnHeaderMetadata(request *http.Request) {
-	apiKey := os.Getenv("API_KEY") // TODO: handle this in config file
+	apiKey := GetConfig().DeLijnAPIKey // TODO: globally define config
 	request.Header.Add("Cache-Control", "no-cache")
 	request.Header.Add("Ocp-Apim-Subscription-Key", apiKey)
 }
@@ -60,7 +59,7 @@ type ApiResponse struct {
 	Haltes     []Halte `json:"haltes"`
 }
 
-func parseDeLijnTransitPoints(jsonData []byte) ([]TransitPoint, error) {
+func parseDeLijnTransitPoints(jsonData []byte) ([]Halte, error) {
 	var result ApiResponse
 
 	err := json.Unmarshal(jsonData, &result)
@@ -68,20 +67,26 @@ func parseDeLijnTransitPoints(jsonData []byte) ([]TransitPoint, error) {
 		return nil, err
 	}
 
-	var transitPoints []TransitPoint
+	// TODO: find a solution to not disrupt spinner
+	// logVerbose(fmt.Sprintf("total results: %d\n", result.AantalHits))
+	return result.Haltes, nil
+}
 
-	// Map the intermediate structs to TransitPoint
-	for _, halte := range result.Haltes {
-		transitPoint := TransitPoint{
-			Id:              halte.Haltenummer,
-			Name:            halte.Omschrijving,
-			Description:     halte.Omschrijving,
-			TransitProvider: string(DELIJN),
-		}
-		transitPoints = append(transitPoints, transitPoint)
+// https://portal.delijn.be/api-details#api=KernOpenDataServicesV1&operation=get-haltes-entiteitnummer-haltenummer-dienstregelingen
+func getDeLijnHalteTimeTable(entityID string, halteID string) ([]byte, error) {
+	url := fmt.Sprintf("https://api.delijn.be/DLKernOpenData/api/v1/haltes/%s/%s/dienstregelingen", entityID, halteID)
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	// Read the response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
 	}
 
-	// TODO:
-	// logVerbose(fmt.Sprintf("total results: %d\n", result.AantalHits))
-	return transitPoints, nil
+	return body, nil
 }
