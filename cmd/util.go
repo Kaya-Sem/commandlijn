@@ -34,6 +34,10 @@ func printTransitPoints(tp []TransitPoint) {
 	}
 }
 
+func printHalte(h Halte) {
+	fmt.Printf("Entiteitnummer: %s Name: %s Description: %s\n", h.Entiteitnummer, h.Omschrijving, h.Haltenummer)
+}
+
 func getCurrentTimeHHMM() string {
 	hours, minutes, _ := time.Now().Clock()
 	return fmt.Sprintf("%d%02d", hours, minutes)

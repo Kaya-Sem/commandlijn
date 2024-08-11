@@ -46,7 +46,9 @@ var delijnCmd = &cobra.Command{
 				return
 			}
 
-			printTransitPoints(transitPoints)
+			for _, halte := range transitPoints {
+				printHalte(halte)
+			}
 		}
 	},
 }
