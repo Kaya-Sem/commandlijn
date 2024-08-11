@@ -86,6 +86,67 @@ func TestLogVerbose(t *testing.T) {
 	if output != expectedOutput+"\n" {
 		t.Errorf("logVerbose output = %q; expected %q", output, expectedOutput+"\n")
 	}
+
+	verbose = false
+	output = captureOutput(func() {
+		logVerbose("This should not appear")
+	})
+
+	if output != "" {
+		t.Errorf("logVerbose output when verbose is false = %q; expected empty output", output)
+	}
+}
+
+// NOTE: These tests depend on local timezone, GMT+01:00
+func TestUnixToHHMM(t *testing.T) {
+	// Belgium is in the CET/CEST timezone.
+	// We'll explicitly set the location to "Europe/Brussels".
+	location, err := time.LoadLocation("Europe/Brussels")
+	if err != nil {
+		t.Fatalf("Failed to load location: %v", err)
+	}
+
+	tests := []struct {
+		input    int64
+		expected string
+	}{
+		{1609459200, "01:00"},
+		{1609492800, "10:20"},
+		{1622505600, "02:00"},
+		{1723393763, "18:29"},
+	}
+
+	for _, tt := range tests {
+		// Convert the Unix timestamp to time.Time in the specified location
+		tm := time.Unix(tt.input, 0).In(location)
+		result := tm.Format("15:04")
+
+		if result != tt.expected {
+			t.Errorf("UnixToHHMM(%d) = %q; expected %q", tt.input, result, tt.expected)
+		}
+	}
+}
+
+func TestFormatDelay(t *testing.T) {
+	tests := []struct {
+		input    int
+		expected string
+	}{
+		{45, "45"},        // Less than an hour
+		{60, "1h"},        // Exactly one hour
+		{75, "1h 15m"},    // One hour and fifteen minutes
+		{120, "2h"},       // Exactly two hours
+		{145, "2h 25m"},   // Two hours and twenty-five minutes
+		{360, "6h"},       // Exactly six hours
+		{1456, "24h 16m"}, // 24 hours and sixteen minutes
+	}
+
+	for _, tt := range tests {
+		result := FormatDelay(tt.input)
+		if result != tt.expected {
+			t.Errorf("FormatDelay(%d) = %q; expected %q", tt.input, result, tt.expected)
+		}
+	}
 }
 
 // Utility function to capture the output of a function
