@@ -9,11 +9,6 @@ import (
 	"path/filepath"
 )
 
-// Configuration structure
-type Config struct {
-	DeLijnAPIKey string `yaml:"delijn_api_key"`
-}
-
 // initCmd represents the init command
 var initCmd = &cobra.Command{
 	Use:   "init",
@@ -53,6 +48,13 @@ func initializeConfig() error {
 	// Create configuration
 	config := Config{
 		DeLijnAPIKey: delijnAPIKey,
+		Aliases: []Alias{
+			{
+				Name:     "GSP",
+				Provider: SNCB,
+				ID:       []string{"BE.NMBS.008892007"},
+			},
+		},
 	}
 
 	// Marshal configuration to YAML
