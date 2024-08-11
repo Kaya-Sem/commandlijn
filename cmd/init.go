@@ -16,6 +16,13 @@ var initCmd = &cobra.Command{
 	Long: `This command initializes a configuration file at ~/.config/commandlijn/commandlijn.yaml
 with the required API key for DeLijn.`,
 	Run: func(cmd *cobra.Command, args []string) {
+
+		// 1) check if config already exists
+		if _, err := os.Stat(getConfigFilePath()); err == nil {
+			fmt.Printf("Config is already present at %s", getConfigFilePath())
+			os.Exit(0)
+		}
+
 		if err := initializeConfig(); err != nil {
 			fmt.Println("Error initializing configuration:", err)
 		} else {
@@ -28,14 +35,22 @@ func init() {
 	rootCmd.AddCommand(initCmd)
 }
 
+func getConfigDir() string {
+	return filepath.Join(os.Getenv("HOME"), ".config", "commandlijn")
+}
+
+func getConfigFilePath() string {
+	configDir := getConfigDir()
+	configFile := filepath.Join(configDir, "commandlijn.yaml")
+	return configFile
+}
+
 // initializeConfig handles the creation of the configuration file
 func initializeConfig() error {
-	// Define paths
-	configDir := filepath.Join(os.Getenv("HOME"), ".config", "commandlijn")
-	configFile := filepath.Join(configDir, "commandlijn.yaml")
+	configFile := getConfigFilePath()
 
 	// Ensure the config directory exists
-	if err := os.MkdirAll(configDir, 0700); err != nil {
+	if err := os.MkdirAll(getConfigDir(), 0700); err != nil {
 		return fmt.Errorf("error creating config directory: %v", err)
 	}
 
@@ -57,13 +72,11 @@ func initializeConfig() error {
 		},
 	}
 
-	// Marshal configuration to YAML
 	data, err := yaml.Marshal(&config)
 	if err != nil {
 		return fmt.Errorf("error marshaling YAML: %v", err)
 	}
 
-	// Write YAML data to file
 	if err := os.WriteFile(configFile, data, 0600); err != nil {
 		return fmt.Errorf("error writing config file: %v", err)
 	}
