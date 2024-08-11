@@ -61,7 +61,7 @@ func initializeConfig() error {
 	}
 
 	// Create configuration
-	config := Config{
+	config := ConfigStruct{
 		DeLijnAPIKey: delijnAPIKey,
 		Aliases: []Alias{
 			{

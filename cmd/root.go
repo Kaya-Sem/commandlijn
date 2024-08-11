@@ -7,24 +7,25 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var Version string // This will be set from main.go
-
 var (
+	Version string // This will be set from main.go
 	verbose bool
-	rootCmd = &cobra.Command{
-		Use:   "commandlijn",
-		Short: "A brief description of your application",
-		Long:  ``,
-		// Define the default action when no subcommands are provided
-		Run: func(cmd *cobra.Command, args []string) {
-			if v, _ := cmd.Flags().GetBool("version"); v {
-				fmt.Println("Version:", Version)
-				os.Exit(ErrCli)
-			}
-			fmt.Println("Use --help to see available commands.")
-		},
-	}
+	Config  ConfigStruct // Global configuration struct
 )
+
+var rootCmd = &cobra.Command{
+	Use:   "commandlijn",
+	Short: "A brief description of your application",
+	Long:  ``,
+	// Define the default action when no subcommands are provided
+	Run: func(cmd *cobra.Command, args []string) {
+		if v, _ := cmd.Flags().GetBool("version"); v {
+			fmt.Println("Version:", Version)
+			os.Exit(ErrCli)
+		}
+		fmt.Println("Use --help to see available commands.")
+	},
+}
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
