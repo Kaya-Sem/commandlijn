@@ -8,7 +8,7 @@ import (
 )
 
 func addDeLijnHeaderMetadata(request *http.Request) {
-	apiKey := GetConfig().DeLijnAPIKey // TODO: globally define config
+	apiKey := Config.DeLijnAPIKey
 	request.Header.Add("Cache-Control", "no-cache")
 	request.Header.Add("Ocp-Apim-Subscription-Key", apiKey)
 }
