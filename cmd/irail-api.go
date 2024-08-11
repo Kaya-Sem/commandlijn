@@ -11,11 +11,11 @@ import (
 
 // when a time is not specified for timetables, we should use the NotTimed URL for better responses from the API.
 const (
-	StationName                 = "" // we only use ID to query for timetables, so the name should be left blank
-	BaseURL                     = "https://api.irail.be"
-	allStationsURL              = BaseURL + "/stations/?format=json&lang=nl"
-	StationTimetableURLTimed    = BaseURL + "/liveboard/?id=%s&station=%s&time=%s&arrdep=%s&lang=nl&format=json"
-	StationTimetableURLNotTimed = BaseURL + "/liveboard/?id=%s&station=%s&arrdep=%s&lang=nl&format=json"
+	stationName                 = "" // we only use ID to query for timetables, so the name should be left blank
+	iRailAPIBaseURL             = "https://api.irail.be"
+	allStationsURL              = iRailAPIBaseURL + "/stations/?format=json&lang=nl"
+	stationTimetableURLTimed    = iRailAPIBaseURL + "/liveboard/?id=%s&station=%s&time=%s&arrdep=%s&lang=nl&format=json"
+	stationTimetableURLNotTimed = iRailAPIBaseURL + "/liveboard/?id=%s&station=%s&arrdep=%s&lang=nl&format=json"
 )
 
 // https://docs.irail.be/#liveboard-liveboard-api-get
@@ -23,9 +23,9 @@ func getSNCBStationTimeTable(stationId string, time string, arrdep string) ([]by
 	var url string
 
 	if time == "" {
-		url = fmt.Sprintf(StationTimetableURLNotTimed, stationId, StationName, arrdep)
+		url = fmt.Sprintf(stationTimetableURLNotTimed, stationId, stationName, arrdep)
 	} else {
-		url = fmt.Sprintf(StationTimetableURLTimed, stationId, StationName, time, arrdep)
+		url = fmt.Sprintf(stationTimetableURLTimed, stationId, stationName, time, arrdep)
 	}
 
 	resp, err := http.Get(url)
