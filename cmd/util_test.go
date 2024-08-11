@@ -32,7 +32,7 @@ func TestPrintTransitPoints(t *testing.T) {
 		{"Station B", "002", "DELIJN", "Bus Stop"},
 	}
 
-	expectedOutput := "001 Haltenummer: Main Station Provider: SNCB\n002 Haltenummer: Bus Stop Provider: DELIJN\n"
+	expectedOutput := "ID: 001 Name: Station A Description: Main Station Provider: SNCB\nID: 002 Name: Station B Description: Bus Stop Provider: DELIJN\n"
 
 	// Capture the output of printTransitPoints
 	output := captureOutput(func() {

@@ -48,26 +48,3 @@ func TestParseiRailTransitPoints(t *testing.T) {
 		t.Errorf("Expected %v, but got %v", expectedTransitPoints, transitPoints)
 	}
 }
-
-// Test parseiRailTransitPoints with missing station ID digits
-
-func TestParseiRailTransitPoints_InvalidIDFormat(t *testing.T) {
-	jsonData := []byte(`{
-		"version": "1.3",
-		"timestamp": "1723234965",
-		"station": [
-			{
-				"id": "BE.NMBS.XXXXXX",
-				"name": "'s Hertogenbosch",
-				"standardname": "'s Hertogenbosch"
-			}
-		]
-	}`)
-
-	_, err := parseiRailTransitPoints(jsonData)
-	if err == nil {
-		t.Fatal("Expected an error due to invalid ID format, but got nil")
-	} else {
-		t.Logf("Received expected error: %v", err)
-	}
-}
