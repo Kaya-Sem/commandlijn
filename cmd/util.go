@@ -13,8 +13,10 @@ const (
 )
 
 const (
-	ErrFileRead  = 2
-	ErrUnmarshal = 5
+	ErrCli        = 1
+	ErrFileRead   = 2
+	ErrUnmarshal  = 5
+	ErrFileExists = 3
 )
 
 var StatusCodes = map[int]string{

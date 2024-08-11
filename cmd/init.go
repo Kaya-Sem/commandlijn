@@ -20,7 +20,7 @@ with the required API key for DeLijn.`,
 		// 1) check if config already exists
 		if _, err := os.Stat(getConfigFilePath()); err == nil {
 			fmt.Printf("Config is already present at %s", getConfigFilePath())
-			os.Exit(0)
+			os.Exit(ErrFileExists)
 		}
 
 		if err := initializeConfig(); err != nil {

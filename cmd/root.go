@@ -19,7 +19,7 @@ var (
 		Run: func(cmd *cobra.Command, args []string) {
 			if v, _ := cmd.Flags().GetBool("version"); v {
 				fmt.Println("Version:", Version)
-				os.Exit(0)
+				os.Exit(ErrCli)
 			}
 			fmt.Println("Use --help to see available commands.")
 		},
@@ -29,7 +29,7 @@ var (
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		os.Exit(ErrCli)
 	}
 }
 
